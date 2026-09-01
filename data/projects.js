@@ -71,8 +71,8 @@ window.PORTFOLIO_DATA.projects = [
         "repo": "resort-management-system",
         "description": "Built a generic Queue ADT (linked-list based) for a resort's walk-in registration module, as part of a team applying custom data structures — Queue, BST, Set, List — to a real booking workflow.",
         "meta": "Data Structures coursework · team project",
-        "image": "",
-        "github": "",
+        "image": "D:\\junha\\TARUMTResorts\\ui\\Screenshot 2026-09-02 015706.png",
+        "github": "https://github.com/Hao0819/TARUMTResorts",
         "tags": [
             "Java",
             "Data Structures",
@@ -85,8 +85,8 @@ window.PORTFOLIO_DATA.projects = [
         "repo": "student-performance-prediction",
         "description": "Compared KNN, Decision Tree, and Logistic Regression with scikit-learn to predict academic performance from a real student-factors dataset. Logistic Regression performed best, with attendance rate and study hours the strongest signals.",
         "meta": "AI/ML coursework · 3-person team",
-        "image": "",
-        "github": "",
+        "image": "C:\\Users\\junha\\Machine-Learning-Supervised---Student-Academic-Performance-Prediction\\interface\\Screenshot 2026-09-02 020212.png",
+        "github": "https://github.com/Hao0819/Machine-Learning-Supervised---Student-Academic-Performance-Prediction",
         "tags": [
             "Python",
             "scikit-learn",
@@ -99,7 +99,7 @@ window.PORTFOLIO_DATA.projects = [
         "repo": "tictactalk",
         "description": "Command-line event management system built with advanced C++ techniques, developed with a small team.",
         "meta": "Team project",
-        "image": "",
+        "image": "C:\Users\junha\OneDrive\画像\Screenshots\Screenshot 2026-09-02 022059.png",
         "github": "https://github.com/51-Shenn/tictactalk",
         "tags": [
             "C++",
@@ -112,7 +112,7 @@ window.PORTFOLIO_DATA.projects = [
         "repo": "pethub",
         "description": "Android application built as part of a team — a pet care and management app. See the repository for full details.",
         "meta": "Mobile development · team project",
-        "image": "",
+        "image": "D:\\junha\\Pictures\\6104693054150218354.jpg",
         "github": "https://github.com/Estrella0407/PetHub",
         "tags": [
             "Kotlin",

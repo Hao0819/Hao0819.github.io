@@ -41,7 +41,7 @@ window.PORTFOLIO_DATA.profile = {
         },
         {
             "category": "Tools",
-            "technologies": "Git, Firebase, Figma, VS Code,"
+            "technologies": "Git, Firebase, Figma, VS Code, IntelliJ IDEA, Android Studio"
         }
     ]
 };
