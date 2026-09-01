@@ -99,7 +99,7 @@ window.PORTFOLIO_DATA.projects = [
         "repo": "tictactalk",
         "description": "Command-line event management system built with advanced C++ techniques, developed with a small team.",
         "meta": "Team project",
-        "image": "C:\Users\junha\OneDrive\画像\Screenshots\Screenshot 2026-09-02 022059.png",
+        "image": "D:\\junha\\Pictures\\Screenshot 2026-09-02 022059.png",
         "github": "https://github.com/51-Shenn/tictactalk",
         "tags": [
             "C++",
