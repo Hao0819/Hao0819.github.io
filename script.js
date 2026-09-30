@@ -1,8 +1,8 @@
 // ===========================================================================
-// Nav state, theme toggle, scroll reveals.
+// Theme toggle and active-tab tracking.
 // ===========================================================================
 
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const THEME_KEY = 'portfolio-theme';
 
 // ===========================
 // Theme
@@ -10,8 +10,6 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 // paint; with nothing saved the page follows the system preference and the
 // html element carries no data-theme at all.
 // ===========================
-const THEME_KEY = 'portfolio-theme';
-
 function currentTheme() {
     const set = document.documentElement.getAttribute('data-theme');
     if (set === 'light' || set === 'dark') return set;
@@ -35,7 +33,7 @@ function initTheme() {
         label();
     });
 
-    // Follow the system while the visitor has never chosen explicitly
+    // Keep following the system while the visitor has never chosen explicitly
     let saved = null;
     try { saved = localStorage.getItem(THEME_KEY); } catch (e) { /* storage blocked */ }
     if (!saved) {
@@ -46,61 +44,36 @@ function initTheme() {
 initTheme();
 
 // ===========================
-// Nav: hairline on scroll, active section
+// Tabs: underline whichever section is in view
 // ===========================
-const nav = document.getElementById('nav');
-const navLinks = [...document.querySelectorAll('.nav-link')];
-const sections = navLinks
-    .map(link => document.querySelector(link.getAttribute('href')))
-    .filter(Boolean);
+const tabs = [...document.querySelectorAll('.tab')];
 
-function updateNav() {
-    if (nav) nav.classList.toggle('scrolled', window.scrollY > 8);
+// #top is the page wrapper rather than a section, so it maps to the very top
+const targets = tabs
+    .map(tab => ({ tab, el: document.querySelector(tab.getAttribute('href')) }))
+    .filter(t => t.el);
 
-    // The section whose top has most recently passed under the nav bar
-    const line = window.scrollY + (nav ? nav.offsetHeight : 0) + 80;
-    let active = null;
-    sections.forEach(section => {
-        if (section.offsetTop <= line) active = section.id;
+function updateTabs() {
+    const line = window.scrollY + 140;
+
+    let active = targets[0];
+    targets.forEach(t => {
+        if (t.el.offsetTop <= line) active = t;
     });
 
-    navLinks.forEach(link => {
-        link.classList.toggle('active', link.getAttribute('href') === `#${active}`);
-    });
+    tabs.forEach(tab => tab.classList.toggle('active', active && tab === active.tab));
 }
 
-window.addEventListener('scroll', updateNav, { passive: true });
-window.addEventListener('resize', updateNav);
-updateNav();
-
-// ===========================
-// Reveal on scroll
-// Runs after the loaders have injected their content.
-// ===========================
-function initReveals() {
-    if (prefersReducedMotion) return;
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-            entry.target.classList.add('shown');
-            observer.unobserve(entry.target);
-        });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-
-    document.querySelectorAll('.section-head, .work-group, .about-text, .skills, .entry, .contact-list, .contact-lead')
-        .forEach((el, i) => {
-            el.classList.add('reveal');
-            el.style.transitionDelay = `${Math.min(i, 6) * 0.05}s`;
-            observer.observe(el);
-        });
-}
+window.addEventListener('scroll', updateTabs, { passive: true });
+window.addEventListener('resize', updateTabs);
 
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { initReveals(); updateNav(); });
+    document.addEventListener('DOMContentLoaded', updateTabs);
 } else {
-    initReveals();
+    updateTabs();
 }
+// Content is injected by the loaders, so section offsets move after first paint
+window.addEventListener('load', updateTabs);
 
 console.log('%cLim Jun Hao', 'font-weight:600;font-size:13px;');
 console.log('%cgithub.com/Hao0819', 'color:#888;font-size:12px;');
