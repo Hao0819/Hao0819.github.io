@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pick a style — Lim Jun Hao</title>
+<style>
+:root{color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}*{margin:0;padding:0}
+body{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#0B0D12;color:#AEB9C7;
+  line-height:1.7;padding:48px 20px 80px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:900px;margin:0 auto}
+h1{font-size:1.5rem;color:#F0F4F9;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
+.sub{font-size:13.5px;margin-bottom:8px}
+.note{font-size:12.5px;color:#6E7C8C;margin-bottom:34px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:18px;margin-bottom:34px}
+.opt{display:block;padding:22px;background:#12161D;border:1px solid #232A35;border-radius:12px;
+  text-decoration:none;color:inherit;transition:.2s}
+.opt:hover{border-color:#4D9BFF;transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.45)}
+.tag{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#0B0D12;
+  padding:2px 9px;border-radius:5px;margin-bottom:12px;font-weight:700}
+.a .tag{background:#A78BFA}
+.b .tag{background:#00E5C0}
+.c .tag{background:#F5C518}
+.opt h2{font-size:1.1rem;color:#F0F4F9;margin-bottom:6px;font-weight:700}
+.opt p{font-size:12.5px;color:#8B98A8}
+.swatch{display:flex;gap:5px;margin-top:14px}
+.swatch i{width:26px;height:9px;border-radius:2px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:28px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid #1D232C}
+th{color:#6E7C8C;font-weight:500;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+td:first-child{color:#F0F4F9}
+.ok{color:#4FE08A}
+.hint{font-size:12.5px;color:#6E7C8C;border-left:2px solid #2B3543;padding-left:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Pick a style</h1>
+  <p class="sub">Three real pages, all filled with your actual 10 projects, experience and skills.</p>
+  <p class="note">Same structure in all three — <code>$ whoami</code> → <code>system_profiler</code> → <code>const projects</code> → <code>git log</code> → <code>getInTouch()</code>. Only the look differs.</p>
+
+  <div class="grid">
+    <a class="opt a" href="a.html">
+      <span class="tag">A</span>
+      <h2>Aurora Glass</h2>
+      <p>Deep indigo with drifting aurora blobs behind frosted-glass cards. Gradient name, soft glow, violet and sky accents.</p>
+      <span class="swatch"><i style="background:#07060F"></i><i style="background:#A78BFA"></i><i style="background:#49C5F5"></i><i style="background:#7BE8A6"></i></span>
+    </a>
+
+    <a class="opt b" href="b.html">
+      <span class="tag">B</span>
+      <h2>Grid &amp; Neon</h2>
+      <p>Technical grid floor, solid panels with hard offset shadows, uppercase display type. Teal and magenta on near-black.</p>
+      <span class="swatch"><i style="background:#0A0C10"></i><i style="background:#00E5C0"></i><i style="background:#FF4D8D"></i><i style="background:#FFC24B"></i></span>
+    </a>
+
+    <a class="opt c" href="c.html">
+      <span class="tag">C</span>
+      <h2>Paper &amp; Ink</h2>
+      <p>Light graph paper, 2px black borders, hard drop shadows, huge outlined name. The one nobody else is doing.</p>
+      <span class="swatch"><i style="background:#F4F1E8"></i><i style="background:#14120C"></i><i style="background:#D93B30"></i><i style="background:#F5C518"></i></span>
+    </a>
+  </div>
+
+  <table>
+    <tr><th>All three include</th><th></th></tr>
+    <tr><td>Section labels as code</td><td><span class="ok">✓</span> the idea you liked, reworded so it is not a copy</td></tr>
+    <tr><td><code>system_profiler</code> moved up</td><td><span class="ok">✓</span> second section, before projects — and it now holds the skills, so there is no <code>class Skill</code></td></tr>
+    <tr><td>Project screenshots</td><td><span class="ok">✓</span> shown where you have one; the other 7 get a styled placeholder</td></tr>
+    <tr><td>Motion</td><td><span class="ok">✓</span> typing role, scroll reveals, hover lift, live nav highlight</td></tr>
+    <tr><td>Your real data</td><td><span class="ok">✓</span> read from <code>../data/*.js</code> — nothing is hardcoded</td></tr>
+  </table>
+
+  <p class="hint">Tell me <strong>A</strong>, <strong>B</strong> or <strong>C</strong> and I will make it the real site and delete this folder. Mixing is fine too — "B but the light background from C".</p>
+
+</div>
+</body>
+</html>

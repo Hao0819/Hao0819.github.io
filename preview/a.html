@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A — Aurora Glass · Lim Jun Hao</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07060F; --bg2:#0C0A18;
+  --glass:rgba(255,255,255,.045); --glass-line:rgba(255,255,255,.10);
+  --fg:#F2EEFF; --fg2:#B5AED4; --fg3:#8D86AB;
+  --violet:#A78BFA; --sky:#49C5F5; --lime:#7BE8A6; --rose:#F97FB5;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Consolas,monospace;
+  --sans:'Sora',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}*{margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{font-family:var(--sans);font-size:15px;line-height:1.65;color:var(--fg2);background:var(--bg);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+ul,ol{list-style:none}
+img{display:block;max-width:100%}
+:focus-visible{outline:2px solid var(--sky);outline-offset:3px;border-radius:4px}
+
+/* ---- Aurora background: three drifting blobs behind everything ---- */
+.aurora{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none;background:
+  radial-gradient(1200px 700px at 12% -10%, #1B1140 0%, transparent 60%),
+  radial-gradient(900px 600px at 92% 8%, #06283C 0%, transparent 62%),
+  linear-gradient(180deg,var(--bg) 0%,var(--bg2) 55%,var(--bg) 100%)}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.42;mix-blend-mode:screen}
+.b1{width:46vw;height:46vw;background:#7C3AED;top:-12vw;left:-8vw;animation:drift1 24s ease-in-out infinite}
+.b2{width:38vw;height:38vw;background:#0EA5E9;top:26vh;right:-10vw;animation:drift2 29s ease-in-out infinite}
+.b3{width:32vw;height:32vw;background:#10B981;bottom:-8vw;left:32vw;opacity:.22;animation:drift3 34s ease-in-out infinite}
+@keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(8vw,6vh) scale(1.14)}}
+@keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-9vw,10vh) scale(.88)}}
+@keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(6vw,-8vh)}}
+/* Fine noise so the gradients don't band on cheap panels */
+.grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* ---- Nav ---- */
+nav{position:fixed;top:0;left:0;right:0;z-index:60;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  background:rgba(7,6,15,.62);border-bottom:1px solid transparent;transition:border-color .3s}
+nav.stuck{border-bottom-color:var(--glass-line)}
+.nav-in{max-width:1080px;margin:0 auto;padding:0 24px;height:62px;display:flex;align-items:center;gap:8px}
+.logo{font-family:var(--mono);font-weight:700;color:var(--fg);letter-spacing:.04em}
+.logo b{color:var(--violet)}
+.nav-links{margin-left:auto;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{font-family:var(--mono);font-size:12.5px;color:var(--fg3);padding:6px 11px;border-radius:8px;white-space:nowrap;transition:.18s}
+.nav-links a:hover{color:var(--fg);background:var(--glass)}
+.nav-links a.on{color:var(--violet);background:rgba(167,139,250,.12)}
+
+/* ---- Shared section chrome ---- */
+section{padding:78px 0;position:relative}
+.sec-label{font-family:var(--mono);font-size:13px;color:var(--fg3);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.sec-label .kw{color:var(--violet)}
+.sec-label .fn{color:var(--sky)}
+.sec-label .str{color:var(--lime)}
+.sec-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--glass-line),transparent)}
+h2.sec-title{font-size:clamp(1.5rem,4vw,2.1rem);font-weight:700;color:var(--fg);letter-spacing:-.02em;margin-bottom:34px}
+
+.glass{background:var(--glass);border:1px solid var(--glass-line);border-radius:16px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(0,0,0,.35)}
+
+/* ---- Hero ---- */
+.hero{padding-top:140px;padding-bottom:60px}
+.prompt{font-family:var(--mono);font-size:14px;color:var(--lime);margin-bottom:20px}
+.prompt .dim{color:var(--fg3)}
+.caret{display:inline-block;width:9px;height:1.05em;background:var(--sky);vertical-align:-2px;margin-left:3px;animation:blink 1.05s step-end infinite}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+h1{font-size:clamp(2.6rem,9vw,5rem);font-weight:800;line-height:1.02;letter-spacing:-.04em;
+  background:linear-gradient(120deg,#FFF 0%,var(--violet) 45%,var(--sky) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:16px}
+.role{font-family:var(--mono);font-size:clamp(1rem,3vw,1.3rem);color:var(--sky);margin-bottom:18px;min-height:1.6em}
+.lede{font-size:clamp(1rem,2.2vw,1.12rem);color:var(--fg2);max-width:52ch;margin-bottom:28px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:34px}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:12px 22px;border-radius:12px;font-family:var(--mono);font-size:13.5px;font-weight:500;border:1px solid transparent;cursor:pointer;transition:.2s}
+.btn-p{color:#0A0616;background:linear-gradient(120deg,var(--violet),var(--sky));box-shadow:0 6px 26px rgba(167,139,250,.32)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 10px 34px rgba(167,139,250,.5)}
+.btn-g{color:var(--fg);background:var(--glass);border-color:var(--glass-line)}
+.btn-g:hover{border-color:var(--violet);transform:translateY(-2px)}
+.pill{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12.5px;color:var(--fg2);
+  padding:7px 15px;border-radius:999px;background:var(--glass);border:1px solid var(--glass-line);margin-bottom:24px}
+.pdot{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 4px rgba(123,232,166,.16);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+
+/* ---- system_profiler ---- */
+.spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1px;background:var(--glass-line);
+  border:1px solid var(--glass-line);border-radius:16px;overflow:hidden;margin-bottom:26px}
+.spec > div{background:rgba(12,10,24,.72);padding:17px 19px}
+.spec dt{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--fg3);margin-bottom:5px}
+.spec dd{font-size:15px;color:var(--fg);font-weight:600}
+.kit{padding:22px}
+.kit-row{display:grid;grid-template-columns:150px 1fr;gap:8px 18px;padding:13px 0;border-bottom:1px dashed var(--glass-line)}
+.kit-row:last-child{border-bottom:none}
+.kit-k{font-family:var(--mono);font-size:12.5px;color:var(--violet)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--mono);font-size:11.5px;color:var(--fg2);padding:3px 10px;border-radius:7px;
+  background:rgba(255,255,255,.05);border:1px solid var(--glass-line);transition:.18s}
+.chip:hover{color:var(--fg);border-color:var(--sky);transform:translateY(-1px)}
+
+/* ---- projects ---- */
+.grp{font-family:var(--mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--fg3);margin:34px 0 14px}
+.grp:first-of-type{margin-top:0}
+.grp-n{color:var(--violet)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px}
+.card{overflow:hidden;display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.22,1,.36,1),border-color .3s,box-shadow .3s}
+.card:hover{transform:translateY(-5px);border-color:rgba(167,139,250,.5);box-shadow:0 18px 44px rgba(0,0,0,.5)}
+.shot{aspect-ratio:16/10;overflow:hidden;background:#0B0918;border-bottom:1px solid var(--glass-line);position:relative}
+.shot img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.card:hover .shot img{transform:scale(1.05)}
+/* Placeholder for the 7 projects with no screenshot yet */
+.ph{position:absolute;inset:0;display:grid;place-items:center;
+  background:radial-gradient(circle at 30% 20%,rgba(167,139,250,.24),transparent 60%),
+             radial-gradient(circle at 75% 80%,rgba(73,197,245,.20),transparent 58%),#0B0918}
+.ph::before{content:'';position:absolute;inset:0;opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:26px 26px}
+.ph span{position:relative;font-family:var(--mono);font-size:13px;color:var(--fg2);text-align:center;padding:0 16px;word-break:break-word}
+.cbody{padding:17px 18px;display:flex;flex-direction:column;flex:1}
+.cbody h3{font-size:1.02rem;font-weight:700;color:var(--fg);margin-bottom:3px}
+.cmeta{font-family:var(--mono);font-size:11.5px;color:var(--fg3);margin-bottom:10px}
+.cbody p{font-size:13.2px;color:var(--fg2);line-height:1.6;margin-bottom:13px;flex:1}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.tag{font-family:var(--mono);font-size:10.8px;color:var(--sky);padding:2px 8px;border-radius:6px;background:rgba(73,197,245,.10)}
+.clink{font-family:var(--mono);font-size:12px;color:var(--lime);align-self:flex-start}
+.clink:hover{text-decoration:underline;text-underline-offset:3px}
+.priv{font-family:var(--mono);font-size:11px;color:var(--fg3)}
+
+/* ---- git log ---- */
+.log{position:relative;padding-left:30px}
+.log::before{content:'';position:absolute;left:5px;top:10px;bottom:10px;width:2px;
+  background:linear-gradient(180deg,var(--violet),var(--sky),transparent)}
+.commit{position:relative;padding-bottom:30px}
+.commit:last-child{padding-bottom:0}
+.commit::before{content:'';position:absolute;left:-30px;top:6px;width:12px;height:12px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--violet);box-shadow:0 0 0 4px rgba(167,139,250,.14)}
+.chash{font-family:var(--mono);font-size:12px;color:var(--rose);margin-right:11px}
+.cdate{font-family:var(--mono);font-size:12px;color:var(--fg3)}
+.commit h3{font-size:1rem;color:var(--fg);margin:6px 0 2px}
+.corg{font-family:var(--mono);font-size:12.5px;color:var(--sky);margin-bottom:8px}
+.commit p{font-size:13.4px;max-width:70ch}
+
+/* ---- getInTouch ---- */
+.touch{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.trow{display:flex;align-items:center;gap:13px;padding:16px 18px;border-radius:14px;
+  background:var(--glass);border:1px solid var(--glass-line);transition:.22s}
+.trow:hover{border-color:var(--violet);transform:translateY(-3px);background:rgba(167,139,250,.07)}
+.ticon{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(167,139,250,.22),rgba(73,197,245,.18));color:var(--violet)}
+.ttext{display:flex;flex-direction:column;min-width:0}
+.tk{font-family:var(--mono);font-size:10.8px;letter-spacing:.09em;text-transform:uppercase;color:var(--fg3)}
+.tv{font-size:13.6px;color:var(--fg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+footer{padding:30px 0 46px;border-top:1px solid var(--glass-line);margin-top:40px}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;font-family:var(--mono);font-size:11.5px;color:var(--fg3)}
+
+/* ---- Scroll reveal ---- */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1)}
+.rv.in{opacity:1;transform:none}
+
+@media(max-width:700px){
+  .wrap,.nav-in{padding:0 16px}
+  section{padding:56px 0}
+  .hero{padding-top:110px}
+  .kit-row{grid-template-columns:1fr;gap:7px}
+  .cards{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+  .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i></div>
+<div class="grain" aria-hidden="true"></div>
+
+<nav id="nav"><div class="nav-in">
+  <a href="#top" class="logo">lim<b>.</b>jh</a>
+  <div class="nav-links">
+    <a href="#top">whoami</a>
+    <a href="#system">system_profiler</a>
+    <a href="#projects">projects</a>
+    <a href="#log">git log</a>
+    <a href="#touch">getInTouch()</a>
+  </div>
+</div></nav>
+
+<main id="top">
+
+  <section class="hero wrap">
+    <p class="pill"><span class="pdot"></span><span id="avail"></span></p>
+    <p class="prompt"><span class="dim">visitor@portfolio</span> ~ $ whoami</p>
+    <h1 id="name">Lim Jun Hao</h1>
+    <p class="role"><span id="role"></span><i class="caret"></i></p>
+    <p class="lede" id="lede"></p>
+    <div class="cta">
+      <a class="btn btn-p" href="#projects">View projects</a>
+      <a class="btn btn-g" href="../assets/LIMJUNHAO_resume.pdf" download>Download resume</a>
+    </div>
+  </section>
+
+  <section id="system" class="wrap">
+    <p class="sec-label rv"><span class="fn">system_profiler</span> <span class="str">SPDeveloperDataType</span></p>
+    <h2 class="sec-title rv">System</h2>
+    <dl class="spec rv" id="spec"></dl>
+    <div class="glass kit rv" id="kit"></div>
+  </section>
+
+  <section id="projects" class="wrap">
+    <p class="sec-label rv"><span class="kw">const</span> <span class="fn">projects</span> = [ … ]</p>
+    <h2 class="sec-title rv">Projects</h2>
+    <div id="projwrap"></div>
+  </section>
+
+  <section id="log" class="wrap">
+    <p class="sec-label rv"><span class="fn">git</span> log --oneline --graph</p>
+    <h2 class="sec-title rv">History</h2>
+    <div class="log" id="log"></div>
+  </section>
+
+  <section id="touch" class="wrap">
+    <p class="sec-label rv"><span class="kw">function</span> <span class="fn">getInTouch</span>() { }</p>
+    <h2 class="sec-title rv">Get in touch</h2>
+    <div class="touch rv" id="touchlist"></div>
+  </section>
+
+</main>
+
+<footer><div class="wrap foot">
+  <span id="copy">&copy; 2026 Lim Jun Hao</span>
+  <span>Preview A — Aurora Glass</span>
+</div></footer>
+
+<script src="../data/profile.js"></script>
+<script src="../data/projects.js"></script>
+<script src="../data/experience.js"></script>
+<script src="render.js"></script>
+<script>PORTFOLIO_PREVIEW.render({ theme: 'a' });</script>
+</body>
+</html>
