@@ -1,6 +1,17 @@
 // ===========================
-// Experience: a dated list
+// Experience: rendered as a git log
 // ===========================
+
+// Deterministic 7-char hex "commit hash" from the entry text (FNV-1a), so the
+// same entry shows the same hash on every reload.
+function fakeHash(text) {
+    let h = 0x811c9dc5;
+    for (let i = 0; i < text.length; i++) {
+        h ^= text.charCodeAt(i);
+        h = (h * 0x01000193) >>> 0;
+    }
+    return h.toString(16).padStart(8, '0').slice(0, 7);
+}
 
 function loadExperience() {
     try {
@@ -10,39 +21,38 @@ function loadExperience() {
             return;
         }
 
-        const list = document.getElementById('timeline');
-        if (!list) {
+        const host = document.getElementById('timeline');
+        if (!host) {
             console.error('Timeline container not found');
             return;
         }
 
-        list.innerHTML = '';
+        host.innerHTML = '';
 
         data.forEach(item => {
-            const entry = document.createElement('li');
-            entry.className = 'entry';
+            const commit = document.createElement('div');
+            commit.className = 'commit rv';
 
-            const date = document.createElement('p');
-            date.className = 'entry-date';
+            const hash = document.createElement('span');
+            hash.className = 'chash';
+            hash.textContent = fakeHash(item.title + item.company);
+
+            const date = document.createElement('span');
+            date.className = 'cdate';
             date.textContent = item.date;
 
-            const body = document.createElement('div');
-
             const title = document.createElement('h3');
-            title.className = 'entry-title';
             title.textContent = item.title;
 
             const org = document.createElement('p');
-            org.className = 'entry-org';
+            org.className = 'corg';
             org.textContent = item.company;
 
             const desc = document.createElement('p');
-            desc.className = 'entry-desc';
             desc.textContent = item.description;
 
-            body.append(title, org, desc);
-            entry.append(date, body);
-            list.appendChild(entry);
+            commit.append(hash, date, title, org, desc);
+            host.appendChild(commit);
         });
 
     } catch (error) {

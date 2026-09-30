@@ -7,9 +7,18 @@ window.PORTFOLIO_DATA.profile = {
     "handle": "Hao0819",
     "title": "Software Engineering Student",
 
+    // 首屏那行会循环打字的头衔 — 第一、二条跟 GitHub profile README 的标语一致
+    "roles": [
+        "Software Engineering Student",
+        "Mobile App Developer",
+        "Flutter & React Native",
+        "Heading toward backend"
+    ],
+
     // 名字下面那段自我介绍 — 每个元素是一行，保持简短
+    // 跟 GitHub profile README 的措辞一致，别单独改这里
     "bio": [
-        "Computing student at TARUMT.",
+        "Software engineering student at TARUMT.",
         "I build mobile apps that talk to hardware, and I'm heading toward backend engineering."
     ],
 
