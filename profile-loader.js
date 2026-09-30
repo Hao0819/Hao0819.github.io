@@ -1,5 +1,5 @@
 // ===========================
-// Profile: hero, about text, installed-package list of skills
+// Profile: hero, facts, about text, skill chips
 // ===========================
 
 function loadProfile() {
@@ -10,104 +10,73 @@ function loadProfile() {
             return;
         }
 
+        const setText = (selector, value) => {
+            if (!value) return;
+            const el = document.querySelector(selector);
+            if (el) el.textContent = value;
+        };
+
         // --- Hero ---
-        const heroName = document.querySelector('.hero-name');
-        if (heroName) heroName.textContent = profile.name;
+        setText('.hero-name', profile.name);
+        setText('#hero-headline', profile.headline || profile.description);
+        setText('#availability-text', profile.availability);
 
-        const heroDescription = document.querySelector('.hero-description');
-        if (heroDescription) heroDescription.textContent = profile.description;
-
-        // Seed the typing effect with the role list (script.js reads this).
-        window.PORTFOLIO_ROLES = (profile.roles && profile.roles.length)
-            ? profile.roles
-            : [profile.title];
-
-        const typingText = document.querySelector('.typing-text');
-        if (typingText) typingText.textContent = profile.title;
-
-        // --- /etc/motd key-value block ---
-        const status = document.querySelector('.spec-status');
-        if (status && profile.status) status.textContent = profile.status;
-
-        const target = document.querySelector('.spec-target');
-        if (target && profile.targetRole) target.textContent = profile.targetRole;
-
-        const stack = document.querySelector('.spec-stack');
-        if (stack && profile.coreStack) stack.textContent = profile.coreStack;
-
-        // --- Prompt hostname follows the GitHub handle ---
-        if (profile.contact && profile.contact.github) {
-            const handle = profile.contact.github.toLowerCase();
-            document.querySelectorAll('.ps1').forEach(el => { el.textContent = `visitor@${handle}`; });
-            document.querySelectorAll('.shell-ps1').forEach(el => { el.textContent = `visitor@${handle}:~$`; });
-            const host = document.querySelector('.tb-host');
-            if (host) host.textContent = handle;
-        }
+        // --- Facts ---
+        setText('.fact-status', profile.status);
+        setText('.fact-target', profile.targetRole);
+        setText('.fact-stack', profile.coreStack);
 
         // --- Document metadata ---
-        document.title = `${profile.name} — Portfolio`;
-
-        const metaAuthor = document.querySelector('meta[name="author"]');
-        if (metaAuthor) metaAuthor.content = profile.name;
-
-        const footer = document.querySelector('.footer p');
-        if (footer) {
-            footer.textContent =
-                `© ${new Date().getFullYear()} ${profile.name}. Built by hand — no framework, no build step.`;
+        if (profile.name) {
+            document.title = `${profile.name} — ${profile.targetRole || 'Portfolio'}`;
+            const metaAuthor = document.querySelector('meta[name="author"]');
+            if (metaAuthor) metaAuthor.content = profile.name;
+            setText('.footer-copy', `© ${new Date().getFullYear()} ${profile.name}`);
         }
 
         // --- About ---
-        if (profile.about) {
-            const aboutText = document.querySelector('.about-text');
-            if (aboutText) {
-                aboutText.innerHTML = '';
-                ['intro', 'interests', 'goal'].forEach(key => {
-                    if (!profile.about[key]) return;
-                    const para = document.createElement('p');
-                    para.textContent = profile.about[key];
-                    aboutText.appendChild(para);
-                });
-            }
+        const aboutText = document.querySelector('.about-text');
+        if (aboutText && profile.about) {
+            aboutText.innerHTML = '';
+            ['intro', 'interests', 'goal'].forEach(key => {
+                if (!profile.about[key]) return;
+                const para = document.createElement('p');
+                para.textContent = profile.about[key];
+                aboutText.appendChild(para);
+            });
         }
 
-        // --- Skills, rendered as `pkg list --installed` output ---
-        if (Array.isArray(profile.skills)) {
-            const list = document.querySelector('.skills-list');
-            if (list) {
-                list.innerHTML = '';
+        // --- Skills, as labelled chip groups ---
+        const skills = document.querySelector('.skills');
+        if (skills && Array.isArray(profile.skills)) {
+            skills.innerHTML = '';
 
-                profile.skills.forEach(skill => {
-                    const row = document.createElement('div');
-                    row.className = 'skill-row';
+            profile.skills.forEach(skill => {
+                const group = document.createElement('div');
+                group.className = 'skill-group';
 
-                    const flag = document.createElement('span');
-                    flag.className = 'skill-flag';
-                    flag.textContent = '[ok]';
+                const label = document.createElement('p');
+                label.className = 'skill-label';
+                label.textContent = skill.category;
 
-                    const name = document.createElement('span');
-                    name.className = 'skill-name';
-                    name.textContent = skill.category;
+                const chips = document.createElement('div');
+                chips.className = 'skill-chips';
 
-                    const tech = document.createElement('span');
-                    tech.className = 'skill-tech';
-                    tech.textContent = skill.technologies;
-
-                    row.append(flag, name, tech);
-                    list.appendChild(row);
-                });
-
-                const skillObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) entry.target.classList.add('visible');
+                // `technologies` is one comma-separated string in data/profile.js
+                String(skill.technologies || '')
+                    .split(',')
+                    .map(t => t.trim())
+                    .filter(Boolean)
+                    .forEach(tech => {
+                        const chip = document.createElement('span');
+                        chip.className = 'chip';
+                        chip.textContent = tech;
+                        chips.appendChild(chip);
                     });
-                }, { threshold: 0.1 });
 
-                list.querySelectorAll('.skill-row').forEach((row, index) => {
-                    row.classList.add('fade-in');
-                    row.style.transitionDelay = `${index * 0.08}s`;
-                    skillObserver.observe(row);
-                });
-            }
+                group.append(label, chips);
+                skills.appendChild(group);
+            });
         }
 
     } catch (error) {

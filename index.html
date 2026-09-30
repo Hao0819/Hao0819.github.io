@@ -4,257 +4,179 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Portfolio of Lim Jun Hao — computing student at TARUMT working toward backend software engineering.">
-  <meta name="keywords" content="portfolio, backend developer, software engineering, java, python, internship, TARUMT">
+  <meta name="description" content="Lim Jun Hao — software engineering student at TARUMT. Mobile apps over BLE, Wi-Fi and MQTT, and the storage design underneath.">
   <meta name="author" content="Lim Jun Hao">
-  <meta name="theme-color" content="#05080D">
-  <title>Lim Jun Hao — Portfolio</title>
+  <meta name="theme-color" content="#09090B">
+  <title>Lim Jun Hao — Software Engineer</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+
   <script>
     // Applied before first paint so the chosen theme never flashes.
     // Wrapped because localStorage throws in private mode / with site data blocked.
     try {
       var t = localStorage.getItem('portfolio-theme');
-      if (t) document.documentElement.setAttribute('data-theme', t);
-    } catch (e) { /* fall through to the default theme */ }
+      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) { /* fall through to the system preference */ }
   </script>
 </head>
 
 <body>
-  <!-- CRT overlay: scanlines, vignette, flicker -->
-  <div class="crt" aria-hidden="true"></div>
 
-  <!-- Terminal title bar -->
-  <header class="titlebar">
-    <div class="tb-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-    <div class="tb-title"><span class="tb-user">visitor</span>@<span class="tb-host">hao0819</span>: ~</div>
-    <div class="tb-meta" aria-hidden="true">tty1</div>
+  <a class="skip-link" href="#work">Skip to work</a>
+
+  <!-- ══════════════ NAV ══════════════ -->
+  <header class="nav" id="nav">
+    <div class="shell nav-inner">
+      <a href="#top" class="nav-logo" aria-label="Home">LJH</a>
+
+      <nav class="nav-links" aria-label="Main">
+        <a href="#work" class="nav-link">Work</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#experience" class="nav-link">Experience</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <button class="theme-btn" id="theme-btn" type="button" aria-label="Switch to light theme">
+        <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2"></circle>
+          <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4"></path>
+        </svg>
+        <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"></path>
+        </svg>
+      </button>
+    </div>
   </header>
 
-  <!-- Command bar / navigation -->
-  <nav class="cmdbar" id="navbar">
-    <div class="cmdbar-inner">
-      <span class="cmdbar-label" aria-hidden="true">cd</span>
-      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-      <ul class="nav-menu" id="nav-menu">
-        <li class="nav-item"><a href="#home" class="nav-link">~</a></li>
-        <li class="nav-item"><a href="#about" class="nav-link">about</a></li>
-        <li class="nav-item"><a href="#portfolio" class="nav-link">projects</a></li>
-        <li class="nav-item"><a href="#experience" class="nav-link">history</a></li>
-        <li class="nav-item"><a href="#contact" class="nav-link">contact</a></li>
-      </ul>
-    </div>
-  </nav>
+  <main id="top">
 
-  <main class="tty">
+    <!-- ══════════════ HERO ══════════════ -->
+    <section class="hero">
+      <div class="shell">
+        <p class="availability">
+          <span class="dot" aria-hidden="true"></span>
+          <span id="availability-text">Open to internships and junior software engineering roles</span>
+        </p>
 
-    <!-- ══════════════ HOME ══════════════ -->
-    <section id="home" class="screen screen-home">
-      <pre class="boot" id="boot" aria-label="Boot sequence"></pre>
+        <h1 class="hero-name">Lim Jun Hao</h1>
 
-      <p class="prompt-line">
-        <span class="ps1">visitor@hao0819</span><span class="ps1-sep">:</span><span class="ps1-cwd">~</span><span class="ps1-sigil">$</span>
-        <span class="cmd">whoami</span>
-      </p>
+        <p class="hero-headline" id="hero-headline">
+          I build mobile apps that talk to hardware.
+        </p>
 
-      <h1 class="hero-name">Lim Jun Hao</h1>
-
-      <p class="hero-role">
-        <span class="arrow" aria-hidden="true">&gt;</span>
-        <span class="typing-text">Backend Developer</span><span class="cursor" aria-hidden="true">&#9608;</span>
-      </p>
-
-      <p class="hero-description">
-        Computing student at TARUMT building toward a career in backend software engineering —
-        one data structure at a time.
-      </p>
-
-      <p class="prompt-line">
-        <span class="ps1">visitor@hao0819</span><span class="ps1-sep">:</span><span class="ps1-cwd">~</span><span class="ps1-sigil">$</span>
-        <span class="cmd">cat /etc/motd</span>
-      </p>
-
-      <div class="kv-block">
-        <div class="kv-row">
-          <span class="kv-key">STATUS</span>
-          <span class="kv-val"><span class="status-dot" aria-hidden="true"></span><span class="spec-status">Studying at TARUMT</span></span>
+        <div class="hero-actions">
+          <a href="#work" class="btn btn-primary">
+            View work
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"></path>
+            </svg>
+          </a>
+          <a href="assets/LIMJUNHAO_resume.pdf" download="Lim_Jun_Hao_Resume.pdf" class="btn btn-ghost">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <path d="M7 10l5 5 5-5M12 15V3"></path>
+            </svg>
+            Resume
+          </a>
         </div>
-        <div class="kv-row">
-          <span class="kv-key">TARGET</span>
-          <span class="kv-val spec-target">Backend / Software Engineer</span>
-        </div>
-        <div class="kv-row">
-          <span class="kv-key">STACK</span>
-          <span class="kv-val spec-stack">Java · Python · C++ · Kotlin</span>
-        </div>
-        <div class="kv-row">
-          <span class="kv-key">UPTIME</span>
-          <span class="kv-val" id="uptime">—</span>
-        </div>
+
+        <dl class="facts">
+          <div class="fact">
+            <dt>Currently</dt>
+            <dd class="fact-status">Studying at TARUMT</dd>
+          </div>
+          <div class="fact">
+            <dt>Focus</dt>
+            <dd class="fact-target">Backend / Software Engineer</dd>
+          </div>
+          <div class="fact">
+            <dt>Stack</dt>
+            <dd class="fact-stack">Java · Dart · Python · TypeScript</dd>
+          </div>
+        </dl>
       </div>
+    </section>
 
-      <div class="hero-buttons">
-        <a href="#portfolio" class="btn btn-primary">./view_projects</a>
-        <a href="#contact" class="btn btn-secondary">./get_in_touch</a>
-      </div>
+    <!-- ══════════════ WORK ══════════════ -->
+    <section id="work" class="section">
+      <div class="shell">
+        <div class="section-head">
+          <h2 class="section-title">Selected work</h2>
+          <p class="section-note">Click any project to expand</p>
+        </div>
 
-      <div class="scroll-indicator" aria-hidden="true">
-        <span class="blink">&#9660;</span> scroll
+        <div class="work-groups">
+          <!-- Project rows are loaded by projects-loader.js -->
+        </div>
       </div>
     </section>
 
     <!-- ══════════════ ABOUT ══════════════ -->
-    <section id="about" class="screen">
-      <p class="prompt-line">
-        <span class="ps1">visitor@hao0819</span><span class="ps1-sep">:</span><span class="ps1-cwd">~</span><span class="ps1-sigil">$</span>
-        <span class="cmd">cat about.txt</span>
-      </p>
-
-      <div class="section-head">
-        <h2 class="section-title">About</h2>
-        <span class="section-rule" aria-hidden="true"></span>
-        <span class="section-tag">01</span>
-      </div>
-
-      <div class="about-content">
-        <div class="about-text">
-          <p>Loading…</p>
+    <section id="about" class="section section-alt">
+      <div class="shell">
+        <div class="section-head">
+          <h2 class="section-title">About</h2>
         </div>
 
-        <div class="skills-container">
-          <p class="prompt-line prompt-sub">
-            <span class="ps1">visitor@hao0819</span><span class="ps1-sep">:</span><span class="ps1-cwd">~</span><span class="ps1-sigil">$</span>
-            <span class="cmd">pkg list --installed</span>
-          </p>
-          <div class="skills-list">
-            <!-- Skill rows are loaded by profile-loader.js -->
+        <div class="about-grid">
+          <div class="about-text">
+            <p>Loading…</p>
+          </div>
+
+          <div class="skills">
+            <!-- Skill groups are loaded by profile-loader.js -->
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ══════════════ PORTFOLIO ══════════════ -->
-    <section id="portfolio" class="screen">
-      <p class="prompt-line">
-        <span class="ps1">visitor@hao0819</span><span class="ps1-sep">:</span><span class="ps1-cwd">~</span><span class="ps1-sigil">$</span>
-        <span class="cmd">ls -la ~/projects</span>
-      </p>
-
-      <div class="section-head">
-        <h2 class="section-title">Projects</h2>
-        <span class="section-rule" aria-hidden="true"></span>
-        <span class="section-tag">02</span>
-      </div>
-
-      <div class="portfolio-grid">
-        <!-- Project entries are loaded by projects-loader.js -->
-      </div>
-    </section>
-
     <!-- ══════════════ EXPERIENCE ══════════════ -->
-    <section id="experience" class="screen">
-      <p class="prompt-line">
-        <span class="ps1">visitor@hao0819</span><span class="ps1-sep">:</span><span class="ps1-cwd">~</span><span class="ps1-sigil">$</span>
-        <span class="cmd">git log --oneline --graph</span>
-      </p>
+    <section id="experience" class="section">
+      <div class="shell">
+        <div class="section-head">
+          <h2 class="section-title">Experience</h2>
+        </div>
 
-      <div class="section-head">
-        <h2 class="section-title">History</h2>
-        <span class="section-rule" aria-hidden="true"></span>
-        <span class="section-tag">03</span>
-      </div>
-
-      <div class="timeline" id="timeline-container">
-        <!-- Timeline entries are loaded by experience-loader.js -->
-      </div>
-
-      <p class="prompt-line prompt-sub">
-        <span class="ps1">visitor@hao0819</span><span class="ps1-sep">:</span><span class="ps1-cwd">~</span><span class="ps1-sigil">$</span>
-        <span class="cmd">wget resume.pdf</span>
-      </p>
-
-      <div class="resume-download">
-        <a href="assets/LIMJUNHAO_resume.pdf" download="Lim_Jun_Hao_Resume.pdf" class="btn btn-primary">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          download resume
-        </a>
-        <span class="dl-note">PDF · ~210 KB</span>
+        <ol class="timeline" id="timeline">
+          <!-- Timeline entries are loaded by experience-loader.js -->
+        </ol>
       </div>
     </section>
 
     <!-- ══════════════ CONTACT ══════════════ -->
-    <section id="contact" class="screen">
-      <p class="prompt-line">
-        <span class="ps1">visitor@hao0819</span><span class="ps1-sep">:</span><span class="ps1-cwd">~</span><span class="ps1-sigil">$</span>
-        <span class="cmd">./contact.sh</span>
-      </p>
-
-      <div class="section-head">
-        <h2 class="section-title">Contact</h2>
-        <span class="section-rule" aria-hidden="true"></span>
-        <span class="section-tag">04</span>
-      </div>
-
-      <p class="contact-desc">
-        I'm open to internships and junior backend / software engineering roles.
-        Type a command below, or just use the links.
-      </p>
-
-      <!-- Interactive shell -->
-      <div class="shell" id="shell">
-        <div class="shell-bar">
-          <span class="shell-dot" aria-hidden="true"></span>
-          <span class="shell-name">contact.sh</span>
-          <button class="shell-clear" id="shell-clear" type="button">clear</button>
+    <section id="contact" class="section section-alt">
+      <div class="shell">
+        <div class="section-head">
+          <h2 class="section-title">Get in touch</h2>
         </div>
-        <div class="shell-body" id="shell-output" role="log" aria-live="polite" aria-label="Terminal output"></div>
-        <form class="shell-input-row" id="shell-form" autocomplete="off">
-          <label class="shell-ps1" for="shell-input">visitor@hao0819:~$</label>
-          <input class="shell-input" id="shell-input" type="text" spellcheck="false"
-            aria-label="Terminal command input" placeholder="type help and press enter">
-        </form>
-      </div>
 
-      <div class="contact-cards">
-        <!-- Contact rows are loaded by contact-loader.js -->
+        <p class="contact-lead" id="contact-lead">
+          Open to internships and junior backend / software engineering roles.
+          The fastest way to reach me is email.
+        </p>
+
+        <div class="contact-list">
+          <!-- Contact rows are loaded by contact-loader.js -->
+        </div>
       </div>
     </section>
 
   </main>
 
   <footer class="footer">
-    <p>&copy; 2026 Lim Jun Hao. Built by hand — no framework, no build step.</p>
+    <div class="shell footer-inner">
+      <p class="footer-copy">&copy; 2026 Lim Jun Hao</p>
+      <p class="footer-note">Built by hand — no framework, no build step.</p>
+    </div>
   </footer>
-
-  <!-- Status bar -->
-  <div class="statusbar">
-    <span class="sb-item sb-branch" aria-hidden="true">&#9679; main</span>
-    <span class="sb-item sb-file" id="sb-file" aria-hidden="true">~/README</span>
-    <span class="sb-spacer"></span>
-    <span class="sb-item" aria-hidden="true">UTF-8</span>
-    <span class="sb-item" id="sb-pos" aria-hidden="true">Ln 1, Col 1</span>
-    <label class="sb-item sb-theme">
-      <span class="sb-theme-mark" aria-hidden="true">&#9686;</span>
-      <span class="sr-only">Colour theme</span>
-      <select id="theme-select">
-        <option value="blue">blue</option>
-        <option value="green">green</option>
-        <option value="amber">amber</option>
-        <option value="paper">paper</option>
-      </select>
-    </label>
-    <span class="sb-item sb-ok" aria-hidden="true">OPEN TO WORK</span>
-  </div>
 
   <!-- Content data — must load before the loaders below -->
   <script src="data/profile.js"></script>
@@ -265,7 +187,6 @@
   <script src="projects-loader.js"></script>
   <script src="experience-loader.js"></script>
   <script src="contact-loader.js"></script>
-  <script src="terminal.js"></script>
   <script src="script.js"></script>
 </body>
 

@@ -1,8 +1,9 @@
 // ===========================
-// Portfolio: projects rendered as a directory listing
+// Work: grouped project rows that expand
+// Each project is a native <details>, so expanding works with the keyboard
+// and on touch without any JavaScript of its own.
 // ===========================
 
-// Escape text that goes into innerHTML so a stray < in the data can't break markup.
 function escapeHtml(value) {
     return String(value == null ? '' : value)
         .replace(/&/g, '&amp;')
@@ -11,43 +12,63 @@ function escapeHtml(value) {
         .replace(/"/g, '&quot;');
 }
 
-// Pick a plausible source extension from the project's first tag, so the
-// file-header strip reads like a real `ls` line rather than a generic label.
-const EXT_BY_TAG = {
-    'flutter': 'dart',
-    'dart': 'dart',
-    'java': 'java',
-    'python': 'py',
-    'c++': 'cpp',
-    'kotlin': 'kt',
-    'react native': 'jsx',
-    'javascript': 'js',
-    'typescript': 'ts',
-    'mobile': 'kt',
-    'cli': 'sh'
-};
-
-function extensionFor(project) {
-    for (const tag of project.tags || []) {
-        const ext = EXT_BY_TAG[String(tag).toLowerCase()];
-        if (ext) return ext;
-    }
-    return 'md';
+// The row header shows a short stack summary rather than every tag.
+function stackSummary(project) {
+    return (project.tags || []).slice(0, 2).join(' · ');
 }
 
-// Projects without a screenshot get a grid panel instead of a broken image.
-function buildThumb(project) {
-    if (project.image) {
-        return `<img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" loading="lazy">`;
-    }
+function buildProject(project, index) {
+    const details = document.createElement('details');
+    details.className = 'project';
 
-    const mark = escapeHtml(project.repo || project.title);
-    return `
-        <div class="project-placeholder">
-            <span class="ph-mark">${mark}</span>
-            <span class="ph-note">no screenshot yet</span>
+    const tags = (project.tags || [])
+        .map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('');
+
+    const meta = project.meta
+        ? `<p class="project-meta">${escapeHtml(project.meta)}</p>`
+        : '';
+
+    const link = project.github
+        ? `<a class="project-link" href="${escapeHtml(project.github)}" target="_blank" rel="noopener noreferrer">
+               View on GitHub
+               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                 <path d="M7 17L17 7M9 7h8v8"></path>
+               </svg>
+           </a>`
+        : '';
+
+    const shot = project.image
+        ? `<div class="project-shot">
+               <img src="${escapeHtml(project.image)}" alt="Screenshot of ${escapeHtml(project.title)}" loading="lazy">
+           </div>`
+        : '';
+
+    details.innerHTML = `
+        <summary>
+            <span class="project-name">${escapeHtml(project.title)}</span>
+            <span class="project-stack">${escapeHtml(stackSummary(project))}</span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+        </summary>
+        <div class="project-body${project.image ? ' has-image' : ''}">
+            <div class="project-detail">
+                ${meta}
+                <p class="project-desc">${escapeHtml(project.description)}</p>
+                <div class="tags">${tags}</div>
+                ${link}
+            </div>
+            ${shot}
         </div>
     `;
+
+    // The first project of each group starts open, so the section never reads
+    // as an unexplained list of titles.
+    if (index === 0) details.open = true;
+
+    return details;
 }
 
 function loadProjects() {
@@ -58,16 +79,15 @@ function loadProjects() {
             return;
         }
 
-        const portfolioGrid = document.querySelector('.portfolio-grid');
-        if (!portfolioGrid) {
-            console.error('Portfolio grid not found');
+        const container = document.querySelector('.work-groups');
+        if (!container) {
+            console.error('Work container not found');
             return;
         }
 
-        portfolioGrid.innerHTML = '';
+        container.innerHTML = '';
 
         // Group by `category`, keeping the order each category first appears in.
-        // Projects with no category fall into a single unlabelled group.
         const groups = [];
         projects.forEach(project => {
             const name = project.category || '';
@@ -79,68 +99,28 @@ function loadProjects() {
             group.items.push(project);
         });
 
-        const buildCard = (project) => {
-            const article = document.createElement('article');
-            article.className = 'project-card';
-
-            const filename = `${project.repo || project.title}.${extensionFor(project)}`;
-
-            const meta = project.meta
-                ? `<p class="project-meta">${escapeHtml(project.meta)}</p>`
-                : '';
-
-            // Only show the repo line when there is something to link to.
-            const link = project.github
-                ? `<a href="${escapeHtml(project.github)}" target="_blank" rel="noopener noreferrer"
-                      class="project-link">git clone &#8599;</a>`
-                : '';
-
-            article.innerHTML = `
-                <div class="project-head">
-                    <span class="project-perm">-rw-r--r--</span>
-                    <span class="project-file">${escapeHtml(filename)}</span>
-                </div>
-                <div class="project-image">
-                    ${buildThumb(project)}
-                </div>
-                <div class="project-info">
-                    <h3>${escapeHtml(project.title)}</h3>
-                    ${meta}
-                    <p>${escapeHtml(project.description)}</p>
-                    <div class="project-tags">
-                        ${(project.tags || []).map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
-                    </div>
-                    ${link}
-                </div>
-            `;
-
-            return article;
-        };
-
         groups.forEach(group => {
+            const section = document.createElement('div');
+            section.className = 'work-group';
+
             if (group.name) {
-                const label = document.createElement('h3');
-                label.className = 'group-label';
+                const head = document.createElement('div');
+                head.className = 'group-head';
+
+                const label = document.createElement('span');
+                label.className = 'group-name';
                 label.textContent = group.name;
-                portfolioGrid.appendChild(label);
+
+                const count = document.createElement('span');
+                count.className = 'group-count';
+                count.textContent = group.items.length + (group.items.length === 1 ? ' project' : ' projects');
+
+                head.append(label, count);
+                section.appendChild(head);
             }
 
-            const grid = document.createElement('div');
-            grid.className = 'project-grid';
-            group.items.forEach(project => grid.appendChild(buildCard(project)));
-            portfolioGrid.appendChild(grid);
-        });
-
-        const projectObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('visible');
-            });
-        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-
-        portfolioGrid.querySelectorAll('.project-card').forEach((card, index) => {
-            card.classList.add('fade-in');
-            card.style.transitionDelay = `${index * 0.08}s`;
-            projectObserver.observe(card);
+            group.items.forEach((project, i) => section.appendChild(buildProject(project, i)));
+            container.appendChild(section);
         });
 
     } catch (error) {

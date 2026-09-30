@@ -12,6 +12,9 @@ window.PORTFOLIO_DATA.profile = {
         "Java & Python Dev"
     ],
     "description": "Software Engineering student at TARUMT building toward a career in backend software engineering — one data structure at a time.",
+    // 首页那句大标题下面的定位句 — 改这里
+    "headline": "I build mobile apps that talk to hardware — over BLE, Wi-Fi and MQTT — and care about the storage design underneath.",
+    "availability": "Open to internships and junior backend / software engineering roles",
     "status": "Studying at TARUMT",
     "targetRole": "Backend / Software Engineer",
     "coreStack": "Java · Dart · Python · TypeScript",
