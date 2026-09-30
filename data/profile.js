@@ -14,10 +14,10 @@ window.PORTFOLIO_DATA.profile = {
     "description": "Software Engineering student at TARUMT building toward a career in backend software engineering — one data structure at a time.",
     "status": "Studying at TARUMT",
     "targetRole": "Backend / Software Engineer",
-    "coreStack": "Java · Python · React Native · Kotlin",
+    "coreStack": "Java · Dart · Python · TypeScript",
     "about": {
         "intro": "I'm a computing student at TARUMT (Tunku Abdul Rahman University of Management and Technology) working toward a career in backend development and software engineering. Most of my coursework sits at the intersection of data structures, object-oriented design, and machine learning.",
-        "interests": "I like taking that from theory into something that actually runs — whether that's a registration system built on a custom queue, or a model that predicts student outcomes from real data. Outside coursework I build small projects to learn tools I haven't used yet, from BLE and MQTT experiments to mobile apps in Kotlin and React Native.",
+        "interests": "I like taking that from theory into something that actually runs — whether that's a registration system built on a custom queue, or a model that predicts student outcomes from real data. Outside coursework I build my own apps to learn tools I haven't used yet — most recently an offline music player in Flutter, where the interesting problems turned out to be storage design and Android's audio stack rather than the UI.",
         "goal": "I'm still early in the field, and I'd rather learn by shipping something small than wait until I feel ready. Currently looking for internships and junior backend / software engineering roles."
     },
     "contact": {
@@ -29,19 +29,23 @@ window.PORTFOLIO_DATA.profile = {
     "skills": [
         {
             "category": "Languages",
-            "technologies": "Java, Python, C++, JavaScript, TypeScript, Kotlin"
+            "technologies": "Java, Dart, Python, TypeScript, JavaScript, C++, Kotlin"
         },
         {
-            "category": "Backend",
-            "technologies": "Data structures & algorithms, OOP design, Oracle SQL"
+            "category": "Mobile",
+            "technologies": "Flutter, React Native, Android Studio, Jetpack Compose"
         },
         {
-            "category": "Mobile & Frontend",
-            "technologies": "React Native, Android Studio, Jetpack Compose"
+            "category": "Backend & Data",
+            "technologies": "Data structures & algorithms, OOP design, Oracle SQL, Hive, Firebase, scikit-learn"
+        },
+        {
+            "category": "Device & Protocols",
+            "technologies": "BLE, Wi-Fi, MQTT, OTA firmware updates"
         },
         {
             "category": "Tools",
-            "technologies": "Git, Firebase, Figma, VS Code, IntelliJ IDEA, Android Studio"
+            "technologies": "Git, Riverpod, Figma, VS Code, IntelliJ IDEA, Android Studio"
         }
     ]
 };

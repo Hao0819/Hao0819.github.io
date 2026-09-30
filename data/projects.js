@@ -67,6 +67,35 @@ window.PORTFOLIO_DATA.projects = [
     // ---------- 课业 & 个人项目 ----------
     {
         "category": "Coursework & personal builds",
+        "title": "Music Player",
+        "repo": "music_player",
+        "description": "Offline audio player for Android, built with Flutter and Riverpod. The Hive database stores only folder-to-file-path links and a play log — titles, artwork and durations are re-read live from MediaStore at render time, so a rescan can never leave stale metadata behind and organising music never touches the files. Includes background playback with lock-screen controls, drag-to-reorder queues, and auto-collections built from the play log.",
+        "meta": "Personal build · Sep 2026",
+        "image": "",
+        "github": "https://github.com/Hao0819/Music_Player",
+        "tags": [
+            "Flutter",
+            "Dart",
+            "Riverpod",
+            "Hive"
+        ]
+    },
+    {
+        "category": "Coursework & personal builds",
+        "title": "Hotel Management System",
+        "repo": "hotel-management-system",
+        "description": "Console-based hotel management system in Java, written to practise object-oriented design. Covers guest, employee, room, booking, payment and housekeeping operations, each behind its own manager class, with Guest and Employee extending a shared abstract Person base.",
+        "meta": "Java OOP · personal build",
+        "image": "",
+        "github": "https://github.com/Hao0819/HotelManagementSystem",
+        "tags": [
+            "Java",
+            "OOP",
+            "CLI"
+        ]
+    },
+    {
+        "category": "Coursework & personal builds",
         "title": "Resort Management System",
         "repo": "resort-management-system",
         "description": "Built a generic Queue ADT (linked-list based) for a resort's walk-in registration module, as part of a team applying custom data structures — Queue, BST, Set, List — to a real booking workflow.",

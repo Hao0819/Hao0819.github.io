@@ -13,6 +13,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script>
+    // Applied before first paint so the chosen theme never flashes.
+    // Wrapped because localStorage throws in private mode / with site data blocked.
+    try {
+      var t = localStorage.getItem('portfolio-theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    } catch (e) { /* fall through to the default theme */ }
+  </script>
 </head>
 
 <body>
@@ -229,13 +237,23 @@
   </footer>
 
   <!-- Status bar -->
-  <div class="statusbar" aria-hidden="true">
-    <span class="sb-item sb-branch">&#9679; main</span>
-    <span class="sb-item sb-file" id="sb-file">~/README</span>
+  <div class="statusbar">
+    <span class="sb-item sb-branch" aria-hidden="true">&#9679; main</span>
+    <span class="sb-item sb-file" id="sb-file" aria-hidden="true">~/README</span>
     <span class="sb-spacer"></span>
-    <span class="sb-item">UTF-8</span>
-    <span class="sb-item" id="sb-pos">Ln 1, Col 1</span>
-    <span class="sb-item sb-ok">OPEN TO WORK</span>
+    <span class="sb-item" aria-hidden="true">UTF-8</span>
+    <span class="sb-item" id="sb-pos" aria-hidden="true">Ln 1, Col 1</span>
+    <label class="sb-item sb-theme">
+      <span class="sb-theme-mark" aria-hidden="true">&#9686;</span>
+      <span class="sr-only">Colour theme</span>
+      <select id="theme-select">
+        <option value="blue">blue</option>
+        <option value="green">green</option>
+        <option value="amber">amber</option>
+        <option value="paper">paper</option>
+      </select>
+    </label>
+    <span class="sb-item sb-ok" aria-hidden="true">OPEN TO WORK</span>
   </div>
 
   <!-- Content data — must load before the loaders below -->

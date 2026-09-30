@@ -14,6 +14,8 @@ function escapeHtml(value) {
 // Pick a plausible source extension from the project's first tag, so the
 // file-header strip reads like a real `ls` line rather than a generic label.
 const EXT_BY_TAG = {
+    'flutter': 'dart',
+    'dart': 'dart',
     'java': 'java',
     'python': 'py',
     'c++': 'cpp',

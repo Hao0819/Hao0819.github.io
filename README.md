@@ -19,8 +19,18 @@ so you can update the site without touching HTML. The page works by
 | `./contact.sh` | A real interactive shell — `help`, `projects`, `hire`, `resume`, ↑/↓ history, Tab completion |
 | CRT overlay | Scanlines, phosphor glow and vignette; disabled under `prefers-reduced-motion` |
 
-Colour tokens are at the top of `style.css` under `:root`. Change `--accent` and the whole
-site follows. Every text/background pair is at or above WCAG AA (4.5:1).
+### Themes
+
+Four colour themes — **blue** (default), **green**, **amber** and **paper** (light).
+Switch from the picker in the status bar, or type `theme green` in the contact shell.
+The choice is saved in `localStorage` and applied before first paint, so it never flashes.
+
+Each theme is one block of tokens in `style.css` under `html[data-theme="…"]`. To add a
+fifth, copy a block, change the values, and add an `<option>` to the picker in `index.html`.
+Nothing else needs touching — no colour is hardcoded anywhere else in the stylesheet.
+
+All 84 text/background pairs (7 foregrounds × 3 surfaces × 4 themes) are at or above
+WCAG AA (4.5:1).
 
 ## Editing your content
 

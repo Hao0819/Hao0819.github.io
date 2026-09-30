@@ -10,17 +10,72 @@ const navLinks = document.querySelectorAll('.nav-link');
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // ===========================
-// Boot sequence
+// Theme switcher
+// The chosen theme is applied by the inline script in <head> before first
+// paint; this only keeps the <select> in sync and saves new choices.
 // ===========================
-const BOOT_LINES = [
-    ['[  0.000000] portfolio kernel v2026.9 booting on tty1', ''],
-    ['[  0.142318] mounting /dev/experience ................. ', 'ok'],
-    ['[  0.318204] loading modules: java python cpp kotlin ... ', 'ok'],
-    ['[  0.506771] resolving github.com ..................... ', 'ok'],
-    ['[  0.664092] indexing 8 projects, 3 history entries ... ', 'ok'],
-    ['[  0.812445] no screenshots for internship builds ..... ', 'warn'],
-    ['[  0.940118] login: visitor (guest shell)', '']
-];
+const THEMES = ['blue', 'green', 'amber', 'paper'];
+const THEME_KEY = 'portfolio-theme';
+
+function initTheme() {
+    const select = document.getElementById('theme-select');
+    if (!select) return;
+
+    let saved = null;
+    try { saved = localStorage.getItem(THEME_KEY); } catch (e) { /* storage blocked */ }
+
+    const current = THEMES.includes(saved) ? saved : 'blue';
+    document.documentElement.setAttribute('data-theme', current);
+    select.value = current;
+
+    select.addEventListener('change', () => {
+        const next = THEMES.includes(select.value) ? select.value : 'blue';
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem(THEME_KEY, next); } catch (e) { /* not fatal */ }
+    });
+}
+
+initTheme();
+
+// ===========================
+// Boot sequence
+// Counts come from the data files, so the numbers stay true as content changes.
+// ===========================
+function buildBootLines() {
+    const data = window.PORTFOLIO_DATA || {};
+    const projects = data.projects || [];
+    const experience = data.experience || [];
+    const skills = (data.profile || {}).skills || [];
+
+    // Pull real languages out of the project tags, in the order they appear.
+    // Tags also carry frameworks and protocols ("Mobile", "BLE"), so match
+    // against a known list rather than just taking the first tag.
+    const LANGUAGES = ['java', 'dart', 'python', 'c++', 'kotlin', 'typescript', 'javascript'];
+    const langs = [...new Set(
+        projects.flatMap(p => p.tags || [])
+            .map(t => String(t).toLowerCase())
+            .filter(t => LANGUAGES.includes(t))
+    )].sort((a, b) => LANGUAGES.indexOf(a) - LANGUAGES.indexOf(b)).slice(0, 5).join(' ');
+
+    const missingShots = projects.filter(p => !p.image).length;
+
+    const lines = [
+        ['[  0.000000] portfolio kernel v2026.9 booting on tty1', ''],
+        [`[  0.142318] mounting /dev/experience (${experience.length} entries) ... `, 'ok'],
+        [`[  0.318204] loading modules: ${langs} ... `, 'ok'],
+        [`[  0.506771] registering ${skills.length} skill groups ......... `, 'ok'],
+        [`[  0.664092] indexing ${projects.length} projects ................. `, 'ok']
+    ];
+
+    if (missingShots) {
+        lines.push([`[  0.812445] ${missingShots} projects have no screenshot ..... `, 'warn']);
+    }
+    lines.push(['[  0.940118] login: visitor (guest shell)', '']);
+
+    return lines;
+}
+
+const BOOT_LINES = buildBootLines();
 
 function runBoot() {
     const boot = document.getElementById('boot');

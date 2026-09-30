@@ -75,6 +75,7 @@
                 ['github', 'open my GitHub profile'],
                 ['linkedin', 'open my LinkedIn'],
                 ['hire', 'the short pitch'],
+                ['theme', 'switch colours: blue | green | amber | paper'],
                 ['date', 'current date and time'],
                 ['clear', 'clear this screen']
             ];
@@ -178,6 +179,33 @@
             line('Core stack: ' + (p.coreStack || '—'));
             blank();
             line('Type `email` to get in touch, or `resume` for the PDF.', 'dim');
+        },
+
+        // Drives the same picker as the status bar, so both stay in sync.
+        theme(args) {
+            const select = document.getElementById('theme-select');
+            const names = select
+                ? [...select.options].map(o => o.value)
+                : ['blue', 'green', 'amber', 'paper'];
+            const wanted = (args[0] || '').toLowerCase();
+
+            if (!wanted) {
+                line('current: ' + (document.documentElement.getAttribute('data-theme') || 'blue'));
+                line('usage: theme <' + names.join('|') + '>', 'dim');
+                return;
+            }
+            if (!names.includes(wanted)) {
+                line(`theme: no such theme '${wanted}'. Try: ${names.join(', ')}`, 'err');
+                return;
+            }
+            if (select) {
+                select.value = wanted;
+                // Fire change so script.js applies it and writes localStorage
+                select.dispatchEvent(new Event('change'));
+            } else {
+                document.documentElement.setAttribute('data-theme', wanted);
+            }
+            line('theme set to ' + wanted, 'ok');
         },
 
         date() {
