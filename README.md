@@ -1,9 +1,26 @@
 # Lim Jun Hao — Portfolio
 
-A single-page portfolio site. Pure HTML, CSS and JavaScript — no framework, no build step.
+A single-page portfolio site styled as a **blue-phosphor CRT terminal**. Every section is
+the output of a command; the Contact section is a shell you can actually type into.
 
-Content lives in `data/`, so you can update the site without touching HTML.
-The page works by **double-clicking `index.html`** — no server needed.
+Pure HTML, CSS and JavaScript — no framework, no build step. Content lives in `data/`,
+so you can update the site without touching HTML. The page works by
+**double-clicking `index.html`** — no server needed.
+
+## The design
+
+| Piece | What it is |
+| --- | --- |
+| Title bar + status bar | Fixed terminal chrome; the status bar tracks which "file" you're viewing |
+| Boot sequence | Prints on load, above the hero |
+| `$ whoami` / `$ cat about.txt` / `$ ls -la ~/projects` … | Each section is introduced by its prompt line |
+| Projects | A directory listing — `-rw-r--r--  project-name.jsx` above each card |
+| History | A `git log` with deterministic commit hashes derived from each entry |
+| `./contact.sh` | A real interactive shell — `help`, `projects`, `hire`, `resume`, ↑/↓ history, Tab completion |
+| CRT overlay | Scanlines, phosphor glow and vignette; disabled under `prefers-reduced-motion` |
+
+Colour tokens are at the top of `style.css` under `:root`. Change `--accent` and the whole
+site follows. Every text/background pair is at or above WCAG AA (4.5:1).
 
 ## Editing your content
 
@@ -11,9 +28,9 @@ You almost never need to open `index.html`. Edit these instead:
 
 | File | Controls |
 | --- | --- |
-| `data/profile.js` | Name, typing-effect roles, hero text, spec table, About paragraphs, skill cards, contact details |
-| `data/projects.js` | The project cards in the Portfolio section |
-| `data/experience.js` | The Experience timeline entries |
+| `data/profile.js` | Name, typing-effect roles, hero text, the `/etc/motd` block, About paragraphs, skill rows, contact details |
+| `data/projects.js` | The project entries in the Projects section |
+| `data/experience.js` | The History (git log) entries |
 
 Each file is plain data wrapped in one line of JavaScript. Keep the
 `window.PORTFOLIO_DATA... =` line at the top and the `;` at the very bottom —
@@ -21,12 +38,16 @@ edit only the part in between. (They are `.js` rather than `.json` so the page
 works when opened directly from your file system; browsers block `fetch()` on
 `file://` URLs.)
 
+The interactive shell reads the same data, so adding a project to `data/projects.js`
+also makes it show up when someone types `projects` in the terminal.
+
 ### Adding a project
 
 Append an object to the list in `data/projects.js`:
 
-```json
+```js
 {
+  "category": "Coursework & personal builds",
   "title": "My Project",
   "repo": "my-project",
   "description": "What it does and what you built.",
@@ -37,22 +58,38 @@ Append an object to the list in `data/projects.js`:
 }
 ```
 
-- `image` — leave as `""` and the card shows a blueprint placeholder instead of a broken image
-- `github` — leave as `""` and the "View on GitHub" bar is hidden
+- `category` — projects sharing a category are grouped under one heading, in first-seen order
+- `image` — leave as `""` and the card shows a grid placeholder instead of a broken image
+- `github` — leave as `""` and the `git clone` link is hidden
 - `meta` — optional one-line context under the title
+- `tags` — the first tag also picks the fake file extension in the card header
+  (`Java → .java`, `React Native → .jsx`, `Python → .py`, `C++ → .cpp`, `Kotlin → .kt`)
 
 ### Typing effect
 
 `data/profile.js` → `roles` is the list the hero cycles through. Add or remove entries freely.
 
+### Terminal commands
+
+Commands live in the `commands` object in `terminal.js`. Add one by adding a method:
+
+```js
+courses() {
+    line('Data Structures, AI/ML, Software Engineering');
+}
+```
+
+It is then available immediately, including in Tab completion and `help`
+(add a row to the `help` table so it's discoverable).
+
 ## Still to fill in
 
-- `assets/resume.pdf` — add your resume with that exact filename, or remove the Download Resume button from `index.html`
-- `data/experience.js` — two entries have `"date": "—"`; replace with real months/years (e.g. `"Jun 2025 – Aug 2025"`)
-- `data/profile.js` → `contact.email` is set to `junhao060103@gmail.com`; change it if you'd rather publish a different address
-- `data/profile.js` → `contact.phone` is empty, so no Phone card is rendered. Add a number to show one
-- `data/projects.js` — the first two projects have no repo link; add one if those are public
-- Project screenshots — drop PNGs in `assets/` and point each project's `image` at them
+- `data/projects.js` — the four internship projects have no screenshots; drop PNGs in
+  `assets/` and point each `image` at them once you have clearance to publish them
+- `data/projects.js` — PetHub's description is still a placeholder
+  ("See the repository for full details")
+- Internship cards name the employer and product names — check these are cleared for
+  public publication before an interview
 
 ## Preview locally
 
@@ -61,36 +98,40 @@ Just **double-click `index.html`**. It opens straight in your browser — no ser
 If you prefer serving it over HTTP (closer to how GitHub Pages behaves), run `run.bat`
 and open `http://localhost:8000`. Both work.
 
-## Publish with GitHub Pages (free)
+## Publish
 
-1. Create a GitHub repository named exactly `Hao0819.github.io`
-2. Push these files:
-   ```
-   git init
-   git add .
-   git commit -m "Portfolio site"
-   git branch -M main
-   git remote add origin https://github.com/Hao0819/Hao0819.github.io.git
-   git push -u origin main
-   ```
-3. In the repo: **Settings → Pages**, set Source to the `main` branch, save
-4. The site goes live at `https://Hao0819.github.io` within a few minutes
+This repo is `Hao0819/Hao0819.github.io`, so GitHub Pages serves `main` automatically:
+
+```
+git add .
+git commit -m "Describe what changed"
+git push
+```
+
+The site is live at <https://hao0819.github.io> within a minute or two. GitHub Pages sends
+`Cache-Control: max-age=600`, so a visitor who loaded the page recently may see the old
+version for up to 10 minutes — hard-refresh with <kbd>Ctrl</kbd>+<kbd>F5</kbd> to skip it.
+
+**Filenames are case-sensitive on GitHub Pages but not on Windows.** If a link works locally
+and 404s live, check the capitalisation of the file as Git recorded it
+(`git ls-files assets/`), not as Explorer shows it.
 
 ## Structure
 
 ```
 .
-├── index.html             # page structure
-├── style.css              # design system + layout
-├── script.js              # nav, typing effect, scroll animations
-├── profile-loader.js      # hero, about, skills   <- data/profile.js
-├── projects-loader.js     # project cards         <- data/projects.js
-├── experience-loader.js   # timeline              <- data/experience.js
-├── contact-loader.js      # contact rows          <- data/profile.js
+├── index.html             # page structure — terminal chrome + section shells
+├── style.css              # colour tokens, CRT overlay, all layout
+├── script.js              # boot sequence, typing effect, nav, status bar
+├── terminal.js            # the interactive contact.sh shell
+├── profile-loader.js      # hero, about, skill rows   <- data/profile.js
+├── projects-loader.js     # project entries           <- data/projects.js
+├── experience-loader.js   # git-log history           <- data/experience.js
+├── contact-loader.js      # contact rows              <- data/profile.js
 ├── data/
 │   ├── profile.js         # your details, skills, contact
-│   ├── projects.js        # project cards
-│   └── experience.js      # timeline entries
-├── assets/                # resume.pdf, project screenshots
+│   ├── projects.js        # project entries
+│   └── experience.js      # history entries
+├── assets/                # resume PDF, project screenshots
 └── run.bat                # local preview server
 ```

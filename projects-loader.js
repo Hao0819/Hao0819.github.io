@@ -1,8 +1,8 @@
 // ===========================
-// Portfolio: project cards
+// Portfolio: projects rendered as a directory listing
 // ===========================
 
-// Escape text that goes into innerHTML so a stray < in JSON can't break markup.
+// Escape text that goes into innerHTML so a stray < in the data can't break markup.
 function escapeHtml(value) {
     return String(value == null ? '' : value)
         .replace(/&/g, '&amp;')
@@ -11,7 +11,29 @@ function escapeHtml(value) {
         .replace(/"/g, '&quot;');
 }
 
-// Projects without a screenshot get a blueprint panel instead of a broken image.
+// Pick a plausible source extension from the project's first tag, so the
+// file-header strip reads like a real `ls` line rather than a generic label.
+const EXT_BY_TAG = {
+    'java': 'java',
+    'python': 'py',
+    'c++': 'cpp',
+    'kotlin': 'kt',
+    'react native': 'jsx',
+    'javascript': 'js',
+    'typescript': 'ts',
+    'mobile': 'kt',
+    'cli': 'sh'
+};
+
+function extensionFor(project) {
+    for (const tag of project.tags || []) {
+        const ext = EXT_BY_TAG[String(tag).toLowerCase()];
+        if (ext) return ext;
+    }
+    return 'md';
+}
+
+// Projects without a screenshot get a grid panel instead of a broken image.
 function buildThumb(project) {
     if (project.image) {
         return `<img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" loading="lazy">`;
@@ -59,22 +81,25 @@ function loadProjects() {
             const article = document.createElement('article');
             article.className = 'project-card';
 
-            // Only show the "View on GitHub" bar when there is a repo to link to.
-            const overlay = project.github
-                ? `<div class="project-overlay">
-                       <a href="${escapeHtml(project.github)}" target="_blank" rel="noopener noreferrer"
-                          class="project-link">View on GitHub &#8599;</a>
-                   </div>`
-                : '';
+            const filename = `${project.repo || project.title}.${extensionFor(project)}`;
 
             const meta = project.meta
                 ? `<p class="project-meta">${escapeHtml(project.meta)}</p>`
                 : '';
 
+            // Only show the repo line when there is something to link to.
+            const link = project.github
+                ? `<a href="${escapeHtml(project.github)}" target="_blank" rel="noopener noreferrer"
+                      class="project-link">git clone &#8599;</a>`
+                : '';
+
             article.innerHTML = `
+                <div class="project-head">
+                    <span class="project-perm">-rw-r--r--</span>
+                    <span class="project-file">${escapeHtml(filename)}</span>
+                </div>
                 <div class="project-image">
                     ${buildThumb(project)}
-                    ${overlay}
                 </div>
                 <div class="project-info">
                     <h3>${escapeHtml(project.title)}</h3>
@@ -83,6 +108,7 @@ function loadProjects() {
                     <div class="project-tags">
                         ${(project.tags || []).map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
                     </div>
+                    ${link}
                 </div>
             `;
 

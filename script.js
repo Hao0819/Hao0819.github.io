@@ -1,6 +1,7 @@
-// ===========================
-// Navigation
-// ===========================
+// ===========================================================================
+// Page behaviour: boot sequence, typing effect, navigation, status bar.
+// ===========================================================================
+
 const navbar = document.getElementById('navbar');
 const navToggle = document.getElementById('nav-toggle');
 const navMenu = document.getElementById('nav-menu');
@@ -8,12 +9,55 @@ const navLinks = document.querySelectorAll('.nav-link');
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Hairline darkens once the page has scrolled off the top.
+// ===========================
+// Boot sequence
+// ===========================
+const BOOT_LINES = [
+    ['[  0.000000] portfolio kernel v2026.9 booting on tty1', ''],
+    ['[  0.142318] mounting /dev/experience ................. ', 'ok'],
+    ['[  0.318204] loading modules: java python cpp kotlin ... ', 'ok'],
+    ['[  0.506771] resolving github.com ..................... ', 'ok'],
+    ['[  0.664092] indexing 8 projects, 3 history entries ... ', 'ok'],
+    ['[  0.812445] no screenshots for internship builds ..... ', 'warn'],
+    ['[  0.940118] login: visitor (guest shell)', '']
+];
+
+function runBoot() {
+    const boot = document.getElementById('boot');
+    if (!boot) return;
+
+    const render = (index) => {
+        const [text, state] = BOOT_LINES[index];
+        boot.appendChild(document.createTextNode(text));
+
+        if (state) {
+            const badge = document.createElement('span');
+            badge.className = state;
+            badge.textContent = state === 'ok' ? '[ ok ]' : '[warn]';
+            boot.appendChild(badge);
+        }
+        boot.appendChild(document.createTextNode('\n'));
+    };
+
+    if (prefersReducedMotion) {
+        BOOT_LINES.forEach((_, i) => render(i));
+        return;
+    }
+
+    BOOT_LINES.forEach((_, i) => {
+        setTimeout(() => render(i), i * 130);
+    });
+}
+
+runBoot();
+
+// ===========================
+// Navigation
+// ===========================
 window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 50);
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
 });
 
-// Mobile menu
 function closeMenu() {
     navMenu.classList.remove('active');
     navToggle.setAttribute('aria-expanded', 'false');
@@ -29,15 +73,19 @@ navToggle.addEventListener('click', () => {
 
     const spans = navToggle.querySelectorAll('span');
     if (isOpen) {
-        spans[0].style.transform = 'rotate(45deg) translateY(9px)';
+        spans[0].style.transform = 'rotate(45deg) translateY(6px)';
         spans[1].style.opacity = '0';
-        spans[2].style.transform = 'rotate(-45deg) translateY(-9px)';
+        spans[2].style.transform = 'rotate(-45deg) translateY(-6px)';
     } else {
         closeMenu();
     }
 });
 
-// Smooth scroll, offset by the fixed navbar height
+// Smooth scroll, offset by both fixed bars.
+// getBoundingClientRect().bottom, not offsetTop: navbar is position:fixed, so
+// its offsetParent is null and offsetTop is not reliable across browsers.
+const barHeight = () => navbar.getBoundingClientRect().bottom;
+
 navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
         const targetId = link.getAttribute('href');
@@ -48,7 +96,7 @@ navLinks.forEach(link => {
         closeMenu();
 
         window.scrollTo({
-            top: targetSection.offsetTop - navbar.offsetHeight,
+            top: targetSection.offsetTop - barHeight() - 12,
             behavior: prefersReducedMotion ? 'auto' : 'smooth'
         });
     });
@@ -56,7 +104,7 @@ navLinks.forEach(link => {
 
 // ===========================
 // Typing effect
-// Roles come from data/profile.json via profile-loader.js.
+// Roles come from data/profile.js via profile-loader.js.
 // ===========================
 const typingText = document.querySelector('.typing-text');
 
@@ -100,12 +148,28 @@ function typeText() {
 }
 
 if (typingText && !prefersReducedMotion) {
-    // Let profile-loader.js populate the role list first.
+    // Start after the boot sequence has finished printing.
     setTimeout(() => {
         charIndex = 0;
         typingText.textContent = '';
         typeText();
-    }, 800);
+    }, BOOT_LINES.length * 130 + 300);
+}
+
+// ===========================
+// Session uptime in the motd block
+// ===========================
+const uptimeEl = document.getElementById('uptime');
+if (uptimeEl) {
+    const start = Date.now();
+    const tick = () => {
+        const s = Math.floor((Date.now() - start) / 1000);
+        const mm = String(Math.floor(s / 60)).padStart(2, '0');
+        const ss = String(s % 60).padStart(2, '0');
+        uptimeEl.textContent = `${mm}:${ss} — thanks for staying`;
+    };
+    tick();
+    setInterval(tick, 1000);
 }
 
 // ===========================
@@ -119,7 +183,7 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.section-header, .about-text, .resume-download, .contact-left, .contact-right')
+    document.querySelectorAll('.section-head, .about-text, .resume-download, .shell, .contact-cards, .prompt-line')
         .forEach(el => {
             el.classList.add('fade-in');
             observer.observe(el);
@@ -127,12 +191,23 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ===========================
-// Active navigation highlight
+// Active nav highlight + status bar
 // ===========================
 const sections = document.querySelectorAll('section[id]');
 
-function highlightNav() {
-    const scrollY = window.pageYOffset + navbar.offsetHeight + 40;
+const SECTION_FILES = {
+    home: '~/README',
+    about: '~/about.txt',
+    portfolio: '~/projects/',
+    experience: '~/.git/log',
+    contact: '~/contact.sh'
+};
+
+const sbFile = document.getElementById('sb-file');
+const sbPos = document.getElementById('sb-pos');
+
+function updateChrome() {
+    const scrollY = window.pageYOffset + barHeight() + 40;
 
     sections.forEach(section => {
         const top = section.offsetTop;
@@ -142,12 +217,21 @@ function highlightNav() {
             navLinks.forEach(link => {
                 link.classList.toggle('active', link.getAttribute('href') === `#${section.id}`);
             });
+            if (sbFile && SECTION_FILES[section.id]) {
+                sbFile.textContent = SECTION_FILES[section.id];
+            }
         }
     });
+
+    // Scroll position as a line number, purely for the terminal feel
+    if (sbPos) {
+        const line = Math.max(1, Math.round(window.pageYOffset / 22) + 1);
+        sbPos.textContent = `Ln ${line}, Col 1`;
+    }
 }
 
-window.addEventListener('scroll', highlightNav);
-window.addEventListener('load', highlightNav);
+window.addEventListener('scroll', updateChrome, { passive: true });
+window.addEventListener('load', updateChrome);
 
-console.log('%cLim Jun Hao — portfolio', 'color:#B9862E;font-family:monospace;font-size:14px;font-weight:bold;');
-console.log('%cSource: github.com/Hao0819', 'color:#5C6670;font-family:monospace;font-size:12px;');
+console.log('%cLim Jun Hao — portfolio', 'color:#35C1FF;font-family:monospace;font-size:14px;font-weight:bold;');
+console.log('%cSource: github.com/Hao0819', 'color:#6B87A3;font-family:monospace;font-size:12px;');

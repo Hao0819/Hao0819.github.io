@@ -1,6 +1,18 @@
 // ===========================
-// Experience: timeline
+// Experience: rendered as a git log
 // ===========================
+
+// Deterministic 7-char hex "commit hash" from the entry text, so the same
+// entry shows the same hash on every reload (FNV-1a).
+function fakeHash(text) {
+    let h = 0x811c9dc5;
+    for (let i = 0; i < text.length; i++) {
+        h ^= text.charCodeAt(i);
+        h = (h * 0x01000193) >>> 0;
+    }
+    return h.toString(16).padStart(8, '0').slice(0, 7);
+}
+
 function loadExperience() {
     try {
         const data = (window.PORTFOLIO_DATA || {}).experience;
@@ -28,6 +40,10 @@ function loadExperience() {
             const content = document.createElement('div');
             content.className = 'timeline-content';
 
+            const hash = document.createElement('span');
+            hash.className = 'timeline-hash';
+            hash.textContent = fakeHash(item.title + item.company);
+
             const date = document.createElement('span');
             date.className = 'timeline-date';
             date.textContent = item.date;
@@ -41,7 +57,7 @@ function loadExperience() {
             const desc = document.createElement('p');
             desc.textContent = item.description;
 
-            content.append(date, title, company, desc);
+            content.append(hash, date, title, company, desc);
             timelineItem.append(marker, content);
             container.appendChild(timelineItem);
         });
@@ -58,8 +74,10 @@ function loadExperience() {
         console.error('Error loading experience data:', error);
         const container = document.getElementById('timeline-container');
         if (container) {
-            container.innerHTML =
-                '<p style="color: var(--color-text-muted); font-family: var(--font-mono); font-size: 0.875rem;">Experience data could not be loaded.</p>';
+            const msg = document.createElement('p');
+            msg.className = 'shell-line err';
+            msg.textContent = 'fatal: experience data could not be loaded.';
+            container.appendChild(msg);
         }
     }
 }
